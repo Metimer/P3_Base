@@ -27,6 +27,10 @@ def fetch_league_data(ligues, table_id, prefix):
     for pays, url_part in ligues.items():
         url = f'https://fbref.com/fr/comps/{url_part}'
         response = requests.get(url, headers=headers)
+        print(f"Request URL: {url}")
+        print(f"Response Status Code: {response.status_code}")
+        print(f"Response Headers: {response.headers}")
+        print(f"Response Text: {response.text}")
 
         if response.status_code != 200:
             print(f"❌ Erreur lors de la récupération de la page pour {pays}.")
