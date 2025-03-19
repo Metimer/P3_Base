@@ -1,0 +1,45 @@
+name: Run Python Scripts Daily at 8 AM UTC
+
+on:
+  # Planification de l'exécution tous les jours à 8h UTC
+  schedule:
+    - cron: '0 8 * * *'
+
+  # Permet d'exécuter manuellement le workflow depuis l'interface GitHub
+  workflow_dispatch:
+
+jobs:
+  run-scripts:
+    runs-on: ubuntu-latest  # Utilise un environnement Linux pour exécuter les scripts
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Cette action permet de récupérer ton code du dépôt
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Tu peux adapter la version de Python en fonction de tes besoins
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip  # Met à jour pip
+        pip install -r requirements.txt  # Installe les dépendances depuis le fichier requirements.txt
+
+    - name: Run extract_avance1.py
+      run: python extract_avance1.py  # Remplace par le chemin exact vers ton script
+
+    - name: Run extract_avance2.py
+      run: python extract_avance2.py
+
+    - name: Run extract_classement.py
+      run: python extract_classement.py
+
+    - name: Run extract_cotes_du_jour.py
+      run: python extract_cotes_du_jour.py
+
+    - name: Run extract_stats.py
+      run: python extract_stats.py
+
+    - name: Run extract_vs.py
+      run: python extract_vs.py
