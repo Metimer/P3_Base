@@ -62,8 +62,15 @@ for pays, url_part in ligues.items():
 
     print(f"✅ Données récupérées pour {pays} ({url_part})")
 
-# Sauvegarder les résultats dans des fichiers CSV
-for pays, df in df_ligues.items():
-    # Enregistrer le CSV dans le répertoire du projet (à la racine)
-    csv_filename = f"Classement_{ligues[pays].split('/')[-1]}.csv"
-    df.to_csv(rf'C:\Users\metin\OneDrive\Bureau\SpotValueBet\{csv_filename}')
+save_path = os.getcwd()  # S'assure que les fichiers sont enregistrés à la racine du repo GitHub
+
+# 🔹 Sauvegarder les fichiers CSV
+for pays, df in df_ligues.items():  # Assure-toi d'utiliser le bon nom de dictionnaire selon le script
+    filename = f"Classement_{pays}.csv"  # Change le préfixe selon le type de données
+    file_path = os.path.join(save_path, filename)
+
+    try:
+        df.to_csv(file_path)  
+        print(f"📁 Fichier sauvegardé : {filename}")
+    except Exception as e:
+        print(f"❌ Erreur lors de la sauvegarde du fichier {filename} : {e}")
