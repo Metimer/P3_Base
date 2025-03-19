@@ -84,7 +84,7 @@ for pays, df in df_ligues_advanced.items():  # Assure-toi d'utiliser le bon nom 
     file_path = os.path.join(save_path, filename)
 
     try:
-        df.to_csv(file_path, index=False)  # Sauvegarde sans index inutile
+        df.to_csv(file_path) 
         print(f"📁 Fichier sauvegardé : {filename}")
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde du fichier {filename} : {e}")
