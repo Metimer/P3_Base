@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import subprocess
 from git import Repo 
+import os
 
 # Dictionnaire des ligues avec les noms des pays et leurs URL
 ligues = {
