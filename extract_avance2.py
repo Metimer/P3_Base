@@ -76,16 +76,15 @@ def fetch_league_data(ligues, table_id, prefix):
 # 🔹 Récupérer les statistiques standard
 df_ligues_advanced = fetch_league_data(ligues, "stats_squads_keeper_for", "full_")
 
-# 🔹 Enregistrer les fichiers CSV
-save_path = r'C:\Users\metin\OneDrive\Bureau\SpotValueBet'
-os.makedirs(save_path, exist_ok=True)  # Assurer que le dossier existe
+save_path = os.getcwd()  # S'assure que les fichiers sont enregistrés à la racine du repo GitHub
 
-for pays, df in df_ligues_advanced.items():
-    filename = f"Advanced2_{pays}.csv"
+# 🔹 Sauvegarder les fichiers CSV
+for pays, df in df_ligues_advanced.items():  # Assure-toi d'utiliser le bon nom de dictionnaire selon le script
+    filename = f"Advanced2_{pays}.csv"  # Change le préfixe selon le type de données
     file_path = os.path.join(save_path, filename)
 
     try:
-        df.to_csv(file_path)
+        df.to_csv(file_path, index=False)  # Sauvegarde sans index inutile
         print(f"📁 Fichier sauvegardé : {filename}")
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde du fichier {filename} : {e}")
