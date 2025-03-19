@@ -79,12 +79,33 @@ df_ligues_stats = fetch_league_data(ligues, "stats_squads_standard_for", "stats_
 save_path = os.getcwd()  # S'assure que les fichiers sont enregistrés à la racine du repo GitHub
 
 # 🔹 Sauvegarder les fichiers CSV
-for pays, df in df_ligues_stats.items(): 
-    filename = f"Advanced_{pays}.csv"  
+for pays, df in df_ligues_stats.items():
+    filename = f"Advanced1_{pays}.csv"  # Change le préfixe selon le type de données
     file_path = os.path.join(save_path, filename)
 
     try:
-        df.to_csv(file_path) 
+        df.to_csv(file_path)  # Sauvegarde le fichier
         print(f"📁 Fichier sauvegardé : {filename}")
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde du fichier {filename} : {e}")
+
+# 🔹 Ajouter, commettre et pousser sur GitHub
+try:
+    # Charger le repo GitHub
+    repo = Repo(save_path)  # Repos GitHub cloné dans le répertoire courant
+    origin = repo.remote(name='origin')  # Définir le remote 'origin'
+
+    # Ajouter les fichiers CSV extraits au commit
+    for pays in df_ligues_stats.keys():
+        file_path = os.path.join(save_path, f"Advanced1_{pays}.csv")
+        repo.git.add(file_path)  # Ajouter chaque fichier CSV
+
+    # Commit les fichiers avec un message
+    repo.index.commit("Mise à jour des fichiers CSV des stats Avancées")
+
+    # Push les changements sur GitHub
+    origin.push()  # Pousse les changements vers GitHub
+    print("🚀 Fichiers CSV mis à jour sur GitHub avec succès !")
+
+except Exception as e:
+    print(f"❌ Erreur lors de la mise à jour sur GitHub : {e}")
