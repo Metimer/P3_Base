@@ -1,7 +1,8 @@
+import os
+from git import Repo
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
-import os
 
 # Dictionnaire des ligues avec les noms des pays et leurs URL
 ligues = {
@@ -72,19 +73,39 @@ def fetch_league_data(ligues, table_id, prefix):
 
     return df_ligues
 
-
 # 🔹 Récupérer les statistiques standard
 df_ligues_advanced = fetch_league_data(ligues, "stats_squads_keeper_for", "full_")
 
 save_path = os.getcwd()  # S'assure que les fichiers sont enregistrés à la racine du repo GitHub
 
 # 🔹 Sauvegarder les fichiers CSV
-for pays, df in df_ligues_advanced.items():  # Assure-toi d'utiliser le bon nom de dictionnaire selon le script
+for pays, df in df_ligues_advanced.items():
     filename = f"Advanced2_{pays}.csv"  # Change le préfixe selon le type de données
     file_path = os.path.join(save_path, filename)
 
     try:
-        df.to_csv(file_path) 
+        df.to_csv(file_path)  # Sauvegarde le fichier
         print(f"📁 Fichier sauvegardé : {filename}")
     except Exception as e:
         print(f"❌ Erreur lors de la sauvegarde du fichier {filename} : {e}")
+
+# 🔹 Ajouter, commettre et pousser sur GitHub
+try:
+    # Charger le repo GitHub
+    repo = Repo(save_path)  # Repos GitHub cloné dans le répertoire courant
+    origin = repo.remote(name='origin')  # Définir le remote 'origin'
+
+    # Ajouter les fichiers CSV extraits au commit
+    for pays in df_ligues_advanced.keys():
+        file_path = os.path.join(save_path, f"Advanced2_{pays}.csv")
+        repo.git.add(file_path)  # Ajouter chaque fichier CSV
+
+    # Commit les fichiers avec un message
+    repo.index.commit("Mise à jour des fichiers CSV des stats Avancées")
+
+    # Push les changements sur GitHub
+    origin.push()  # Pousse les changements vers GitHub
+    print("🚀 Fichiers CSV mis à jour sur GitHub avec succès !")
+
+except Exception as e:
+    print(f"❌ Erreur lors de la mise à jour sur GitHub : {e}")
