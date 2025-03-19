@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import pandas as pd
+import os
+from git import Repo  # Importer la bibliothèque git
 
 # Dictionnaire des ligues avec les noms des pays et les suffixes urls
 ligues = {
@@ -81,6 +83,31 @@ df = pd.DataFrame(match_data)
 
 # Enregistrer le CSV dans le répertoire du projet (à la racine)
 csv_filename = "cotes_du_jour.csv"
-df.to_csv(rf'C:\Users\metin\OneDrive\Bureau\SpotValueBet\{csv_filename}', index=False)
+save_path = os.getcwd()  # S'assure que les fichiers sont enregistrés à la racine du repo GitHub
 
-print(f"Fichier {csv_filename} enregistré avec succès !")
+try:
+    # Sauvegarde du fichier CSV
+    df.to_csv(csv_filename, index=False)  # index=False pour ne pas inclure l'index du DataFrame dans le fichier CSV
+    print(f"📁 Fichier sauvegardé : {csv_filename}")
+except Exception as e:
+    print(f"❌ Erreur lors de la sauvegarde du fichier {csv_filename} : {e}")
+
+# 🔹 Ajouter, commettre et pousser sur GitHub
+try:
+    # Charger le repo GitHub
+    repo = Repo(save_path)  # Repos GitHub cloné dans le répertoire courant
+    origin = repo.remote(name='origin')  # Définir le remote 'origin'
+
+    # Ajouter le fichier CSV au suivi de Git
+    file_path = os.path.join(save_path, csv_filename)
+    repo.git.add(file_path)  # Ajouter chaque fichier CSV
+
+    # Commit des fichiers avec un message
+    repo.index.commit("Mise à jour des fichiers CSV des cotes")
+
+    # Push les changements sur GitHub
+    origin.push()  # Pousse les changements vers GitHub
+    print("🚀 Fichiers CSV mis à jour sur GitHub avec succès !")
+
+except Exception as e:
+    print(f"❌ Erreur lors de la mise à jour sur GitHub : {e}")
